@@ -118,11 +118,9 @@ $(APP): check_tamago proto
 
 %.bin: CROSS_COMPILE=arm-none-eabi-
 %.bin: %
-	$(CROSS_COMPILE)objcopy -j .text -j .rodata -j .shstrtab -j .typelink -j .itablink \
-	    -j .gopclntab -j .go.type -j .go.func -j .go.buildinfo -j go.fipsinfo -j .go.module \
-	    -j .noptrdata -j .data \
-	    -j .bss --set-section-flags .bss=alloc,load,contents \
-	    -j .noptrbss --set-section-flags .noptrbss=alloc,load,contents \
+	$(CROSS_COMPILE)objcopy --remove-section=.debug* --remove-section=.note* \
+	    --set-section-flags .bss=alloc,load,contents \
+	    --set-section-flags .noptrbss=alloc,load,contents \
 	    $< -O binary $@
 
 %.imx: % %.bin %.dcd
